@@ -1,0 +1,28 @@
+{
+  "credentials": {
+    "username": "Tester",
+    "password": "nyhZz%7x6r"
+  },
+  "urls": {
+    "base": "https://kal-sense.prod.kaleidoo-dev.com",
+    "login": "/Kaleidoo_AI"
+  },
+  "testFiles": {
+    "textFile": {
+      "name": "test-document.txt",
+      "content": "This is a test document for automation testing."
+    },
+    "imageFile": {
+      "name": "test-image.jpg",
+      "tags": ["automation", "test", "qa"]
+    }
+  },
+  "collections": {
+    "defaultName": "Test Collection Auto"
+  },
+  "timeouts": {
+    "short": 5000,
+    "medium": 10000,
+    "long": 30000
+  }
+}

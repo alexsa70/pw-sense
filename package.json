@@ -1,12 +1,27 @@
 {
-  "name": "pw-sense",
+  "name": "kalsense-automation",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
-  "keywords": [],
-  "author": "",
+  "scripts": {
+    "test": "npx playwright test",
+    "test:headed": "npx playwright test --headed",
+    "test:debug": "npx playwright test --debug",
+    "test:ui": "npx playwright test --ui",
+    "test:chromium": "npx playwright test --project=chromium",
+    "test:firefox": "npx playwright test --project=firefox",
+    "report": "npx playwright show-report",
+    "codegen": "npx playwright codegen https://kal-sense.prod.kaleidoo-dev.com/Kaleidoo_AI"
+  },
+  "keywords": [
+    "playwright",
+    "automation",
+    "testing",
+    "e2e",
+    "kalsense"
+  ],
+  "author": "AlexL",
   "license": "ISC",
-  "description": "",
+  "description": "Playwright automation testing for KalSense system",
   "devDependencies": {
     "@playwright/test": "^1.58.0",
     "@types/node": "^25.1.0"
