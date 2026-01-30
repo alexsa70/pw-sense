@@ -49,18 +49,18 @@ test.describe('Login Flow', () => {
     });
 
     test('Unsuccessful login with empty fields', async () => {
-        // Act
+        // Act - открываем страницу логина, поля пустые (ничего не вводим и не кликаем)
         await loginPage.navigateToLogin();
-        await loginPage.clickLoginButton();
 
-        // Assert
-        // Login form should remain visible
+        // Assert - кнопка должна быть неактивна, пользователь не залогинен
         const isLoggedIn = await loginPage.isLoggedIn();
         expect(isLoggedIn).toBe(false);
 
-        // Login button should still be visible
         const isLoginButtonVisible = await loginPage.isLoginButtonVisible();
         expect(isLoginButtonVisible).toBe(true);
+
+        const isEnabled = await loginPage.isLoginButtonEnabled();
+        expect(isEnabled).toBe(false);
     });
 
     test('Verify login page elements are displayed', async () => {
