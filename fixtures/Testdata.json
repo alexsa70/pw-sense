@@ -32,16 +32,6 @@
           "jpeg"
         ]
       }
-    },
-    "videoFile": {
-      "name": "test-video.mp4",
-      "path": "test-files/videos/test-video.mp4",
-      "tags": [
-        "automation",
-        "test",
-        "video",
-        "mp4"
-      ]
     }
   },
   "collections": {

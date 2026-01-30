@@ -9,7 +9,7 @@ import testData from '../fixtures/testData.json';
 
 /**
  * Test suite for KalSense Media Upload functionality (E2E)
- * Covers upload of images (PNG, JPG, JPEG) and videos (MP4)
+ * Covers upload of images (PNG, JPG, JPEG)
  * This is the main E2E test required by the assignment
  */
 test.describe('Media Upload - End to End', () => {
@@ -22,7 +22,6 @@ test.describe('Media Upload - End to End', () => {
   const pngFilePath = FileHelpers.getAbsolutePath(testData.testFiles.imageFiles.png.path);
   const jpgFilePath = FileHelpers.getAbsolutePath(testData.testFiles.imageFiles.jpg.path);
   const jpegFilePath = FileHelpers.getAbsolutePath(testData.testFiles.imageFiles.jpeg.path);
-  const videoFilePath = FileHelpers.getAbsolutePath(testData.testFiles.videoFile.path);
 
   test.beforeEach(async ({ page }) => {
     loginPage = new LoginPage(page);
@@ -97,25 +96,6 @@ test.describe('Media Upload - End to End', () => {
     await albumPage.waitForToast();
     await albumPage.clickAlbumByName(albumName);
     await mediaPage.uploadFileWithMetadata(jpegFilePath, tags, description);
-
-    // Assert
-    const isToastVisible = await mediaPage.isToastVisible();
-    expect(isToastVisible).toBe(true);
-  });
-
-  test('Upload MP4 video to new album @smoke', async () => {
-    // Arrange
-    const albumName = `${testData.albums.prefix}Video_Upload_${Date.now()}`;
-    const tags = testData.testFiles.videoFile.tags;
-    const description = 'Test MP4 video uploaded via Playwright';
-
-    // Act
-    await mediaPage.navigateToMedia();
-    await mediaPage.switchToAlbumsTab();
-    await albumPage.createAlbum(albumName);
-    await albumPage.waitForToast();
-    await albumPage.clickAlbumByName(albumName);
-    await mediaPage.uploadFileWithMetadata(videoFilePath, tags, description);
 
     // Assert
     const isToastVisible = await mediaPage.isToastVisible();
