@@ -316,6 +316,15 @@ export class MediaPage extends BasePage {
     }
 
     /**
+     * Click on the first image card in gallery (opens image details).
+     * Use when you need to open any image without knowing file ID (e.g. after upload).
+     */
+    async clickFirstImageInGallery(): Promise<void> {
+        const firstCard = this.page.locator('[data-testid$="-imageCard"]').first();
+        await this.click(firstCard.getByRole('img', { name: 'Media' }));
+    }
+
+    /**
      * Open more actions menu
      */
     async openMoreActions(): Promise<void> {
