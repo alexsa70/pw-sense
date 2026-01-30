@@ -1,28 +1,82 @@
 {
-  "credentials": {
-    "username": "Tester",
-    "password": "nyhZz%7x6r"
-  },
-  "urls": {
-    "base": "https://kal-sense.prod.kaleidoo-dev.com",
-    "login": "/Kaleidoo_AI"
-  },
   "testFiles": {
     "textFile": {
       "name": "test-document.txt",
       "content": "This is a test document for automation testing."
     },
-    "imageFile": {
-      "name": "test-image.jpg",
-      "tags": ["automation", "test", "qa"]
+    "imageFiles": {
+      "png": {
+        "name": "test-image.png",
+        "path": "test-files/images/test-image.png",
+        "tags": [
+          "automation",
+          "test",
+          "png"
+        ]
+      },
+      "jpg": {
+        "name": "test-photo.jpg",
+        "path": "test-files/images/test-photo.jpg",
+        "tags": [
+          "automation",
+          "test",
+          "jpg"
+        ]
+      },
+      "jpeg": {
+        "name": "test-image.jpeg",
+        "path": "test-files/images/test-image.jpeg",
+        "tags": [
+          "automation",
+          "test",
+          "jpeg"
+        ]
+      }
+    },
+    "videoFile": {
+      "name": "test-video.mp4",
+      "path": "test-files/videos/test-video.mp4",
+      "tags": [
+        "automation",
+        "test",
+        "video",
+        "mp4"
+      ]
     }
   },
   "collections": {
-    "defaultName": "Test Collection Auto"
+    "defaultName": "Test Collection Auto",
+    "prefix": "AutoTest_"
+  },
+  "albums": {
+    "defaultName": "Test Album Auto",
+    "prefix": "Album_"
   },
   "timeouts": {
     "short": 5000,
     "medium": 10000,
     "long": 30000
+  },
+  "tags": {
+    "default": [
+      "automation",
+      "playwright",
+      "test"
+    ],
+    "media": [
+      "image",
+      "photo",
+      "test"
+    ],
+    "document": [
+      "doc",
+      "text",
+      "test"
+    ],
+    "video": [
+      "video",
+      "mp4",
+      "test"
+    ]
   }
 }
