@@ -12,12 +12,11 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 export default defineConfig({
   testDir: './tests',
 
-  /*Global setup for autenthication */
+  /* Global setup for authentication - DISABLED (httpOnly cookies not supported) */
+  // globalSetup: require.resolve('./global-setup.ts'),
 
-  //globalSetup: require.resolve('./global-setup.ts'),
-
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+  /* Run tests in files in parallel - DISABLED to avoid conflicts */
+  fullyParallel: false,
 
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
@@ -26,7 +25,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
 
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : 2,
+  workers: 1, // Run tests sequentially to avoid conflicts
 
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
@@ -74,8 +73,8 @@ export default defineConfig({
     {
       name: 'chromium',
       use: {
-        ...devices['Desktop Chrome']
-        //storageState: 'auth.json',
+        ...devices['Desktop Chrome'],
+        // storageState: 'auth.json', // DISABLED (httpOnly cookies not supported)
       },
     },
 

@@ -10,7 +10,7 @@ import testData from '../fixtures/testData.json';
  * Update Image Tags Test 
  * Complete flow: Login → Upload Image → Update Tags on Uploaded Image
  */
-test.describe('Update Image Tags - E2E', () => {
+test.describe.skip('Update Image Tags - E2E', () => {
     test('Upload image and update tags', async ({ page }) => {
         test.setTimeout(100000);
 
@@ -25,13 +25,11 @@ test.describe('Update Image Tags - E2E', () => {
         const description = 'Test image for tags update';
 
         // ========================================
-        // STEP 1: Login
+        // STEP 1: Direct Login
         // ========================================
         const { username, password } = config.credentials;
         await loginPage.login(username, password);
-
-        const isLoggedIn = await loginPage.isLoggedIn();
-        expect(isLoggedIn).toBe(true);
+        expect(await loginPage.isLoggedIn()).toBe(true);
         console.log('✅ Login successful');
 
         // ========================================

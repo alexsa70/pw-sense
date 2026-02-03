@@ -21,9 +21,19 @@ async function globalSetup(config: FullConfig) {
   await page.getByTestId('password').fill(password);
   await page.getByTestId('login-btn').click();
   
-  // Wait for login to complete
+  // Wait for login to complete - check for element that appears AFTER login
   await page.waitForLoadState('networkidle');
-  await page.waitForTimeout(2000);
+  
+  // Wait for navigation away from login page OR for sidebar menu to appear
+  try {
+    // Wait for a sidebar element that only appears when logged in
+    await page.getByTestId('Media').waitFor({ state: 'visible', timeout: 15000 });
+  } catch {
+    console.warn('⚠️  Media menu not found, login may have failed');
+  }
+  
+  // Additional wait to ensure all cookies are set
+  await page.waitForTimeout(3000);
 
   // Save authentication state
   await context.storageState({ path: 'auth.json' });

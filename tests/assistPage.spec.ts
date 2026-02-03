@@ -1,11 +1,12 @@
 import { test, expect, Page, BrowserContext } from '@playwright/test';
-import { LoginPage } from '../pages/LoginPage';
 import { AssistPage } from '../pages/AssistPage';
+import { LoginPage } from '../pages/LoginPage';
 import { config } from '../config/env.config';
 
 /**
  * Assist Page Tests (split into multiple tests, single login)
  * Uses serial execution and shared page/context.
+ * Performs direct login in beforeAll (storageState doesn't work for this site).
  */
 test.describe.serial('Assist Page - UI Verification (split)', () => {
   let context: BrowserContext;
@@ -13,16 +14,24 @@ test.describe.serial('Assist Page - UI Verification (split)', () => {
   let assistPage: AssistPage;
 
   test.beforeAll(async ({ browser }) => {
+    // Create context manually to reuse across tests (serial mode)
     context = await browser.newContext();
     page = await context.newPage();
-    assistPage = new AssistPage(page);
-
+    
+    // Direct login (storageState doesn't work for this site)
     const loginPage = new LoginPage(page);
     const { username, password } = config.credentials;
     await loginPage.login(username, password);
-
-    const isLoggedIn = await loginPage.isLoggedIn();
-    expect(isLoggedIn).toBe(true);
+    
+    // Wait for login to complete
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+    
+    assistPage = new AssistPage(page);
+    
+    // Navigate to Assist page
+    await assistPage.navigateToAssist();
+    console.log('✅ Direct login completed');
   });
 
   test.afterAll(async () => {

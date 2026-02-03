@@ -65,22 +65,25 @@ This step is required only once per machine.
 
 ---
 
-## Environment Configuration (Optional)
+## Environment Configuration (Required)
 
-If the project uses environment variables (for example, base URLs, credentials, tokens):
+This project requires environment variables for authentication and configuration:
 
-1. Create a `.env` file in the project root
-2. Copy values from `.env.example` (if provided)
-3. Fill in the required values
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
 
-Example:
-
-```env
-BASE_URL=https://example.com
-API_TOKEN=your_token_here
-```
+2. Fill in the required values in `.env`:
+   ```env
+   BASE_URL=https://kal-sense.prod.kaleidoo-dev.com
+   USERNAME=your_username
+   PASSWORD=your_password
+   ```
 
 > ⚠️ Never commit `.env` files to the repository
+
+**Note:** Each test performs direct login. The site uses httpOnly cookies which cannot be saved/reused via `storageState`.
 
 ---
 
@@ -218,9 +221,16 @@ Test artifacts (reports, traces, screenshots) should be collected as CI artifact
 ## Useful Commands
 
 ```bash
-npx playwright test        # Run all tests
-npx playwright test --ui   # Run tests using Playwright UI mode
-npx playwright codegen     # Generate tests using codegen
+npm test                   # Run all tests
+npm run test:headed        # Run tests with visible browser
+npm run test:ui            # Run tests using Playwright UI mode
+npm run test:smoke         # Run only @smoke tagged tests
+npm run test:login         # Run login tests in headed mode
+npm run test:assist        # Run assist page tests
+npm run test:album         # Run album tests
+npm run test:upload        # Run upload tests
+npm run report             # Show HTML test report
+npm run codegen            # Generate tests using codegen
 ```
 
 ---

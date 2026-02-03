@@ -6,6 +6,7 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 screenshots/
+auth.json
 
 # Node
 node_modules/

@@ -20,13 +20,11 @@ test.describe('Album Management -E2E', () => {
         const albumName = `AlexAutomationTest${Date.now()}`;
 
         //============================================
-        //Step 1. - Login
+        //Step 1. - Direct Login
         //============================================
         const { username, password } = config.credentials;
-        await loginPage.login(username, password)
-
-        const isLoggedIn = await loginPage.isLoggedIn();
-        expect(isLoggedIn).toBe(true);
+        await loginPage.login(username, password);
+        expect(await loginPage.isLoggedIn()).toBe(true);
         console.log('✅ Login successful');
 
         // ========================================

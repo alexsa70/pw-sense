@@ -22,13 +22,11 @@ test.describe('Upload Image - E2E', () => {
         const description = 'Test image uploaded via Playwright automation';
 
         // ========================================
-        // STEP 1: Login
+        // STEP 1: Direct Login
         // ========================================
         const { username, password } = config.credentials;
         await loginPage.login(username, password);
-
-        const isLoggedIn = await loginPage.isLoggedIn();
-        expect(isLoggedIn).toBe(true);
+        expect(await loginPage.isLoggedIn()).toBe(true);
         console.log('✅ Login successful');
 
         // ========================================

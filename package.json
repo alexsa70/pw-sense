@@ -9,6 +9,11 @@
     "test:ui": "npx playwright test --ui",
     "test:chromium": "npx playwright test --project=chromium",
     "test:firefox": "npx playwright test --project=firefox",
+    "test:smoke": "npx playwright test --grep @smoke",
+    "test:login": "npx playwright test tests/loginPage.spec.ts --headed",
+    "test:assist": "npx playwright test tests/assistPage.spec.ts --headed",
+    "test:album": "npx playwright test tests/albumCreating.spec.ts --headed",
+    "test:upload": "npx playwright test tests/uploadImage.spec.ts --headed",
     "report": "npx playwright show-report",
     "codegen": "npx playwright codegen https://kal-sense.prod.kaleidoo-dev.com/Kaleidoo_AI"
   },
