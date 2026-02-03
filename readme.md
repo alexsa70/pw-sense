@@ -138,7 +138,12 @@ Reports are generated locally and are not committed to the repository.
 
 ```text
 .
-├── tests/                  # E2E test files
+├── tests/                  # E2E test specs
+├── pages/                  # Page Object Model (POM) classes
+├── utils/                  # Helpers (files, paths, etc.)
+├── fixtures/               # Test data (JSON)
+├── test-files/             # Files used in upload tests
+├── config/                 # Environment config
 ├── playwright.config.ts    # Playwright configuration
 ├── package.json            # Project dependencies and scripts
 ├── package-lock.json       # Dependency lock file
@@ -146,6 +151,40 @@ Reports are generated locally and are not committed to the repository.
 └── .gitignore              # Git ignore rules
 ```
 
+---
+
+## Test Structure
+
+Tests are grouped by feature and use the Page Object Model from `pages/`.
+
+Current specs in `tests/`:
+
+- `albumCreating.spec.ts` — create and delete album flow
+- `assistPage.spec.ts` — Assist page UI checks (welcome text, dialog, upload, connector, all connector elements)
+- `loginPage.spec.ts` — login flows (valid/invalid, UI checks)
+- `updateImageTags.spec.ts` — upload image and update tags on the uploaded image
+- `updateTag.spec.ts` — update tags scenarios (existing media)
+- `uploadImage.spec.ts` — upload image flows (gallery/album)
+
+### Run specific test files
+
+Examples (headed mode):
+
+```bash
+npx playwright test tests/loginPage.spec.ts --headed
+npx playwright test tests/assistPage.spec.ts --headed
+npx playwright test tests/albumCreating.spec.ts --headed
+npx playwright test tests/uploadImage.spec.ts --headed
+npx playwright test tests/updateImageTags.spec.ts --headed
+npx playwright test tests/updateTag.spec.ts --headed
+```
+-g is a filter by test name (grep).
+It allows you to run only those tests with the desired text in the name, rather than the entire file.
+
+Example:
+```bash
+npx playwright test -g "Verify welcome message"
+```
 ---
 
 ## Common Issues

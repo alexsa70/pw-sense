@@ -10,30 +10,43 @@ export class AlbumPage extends BasePage {
   private readonly newAlbumIcon: Locator;
   private readonly albumTagInput: Locator;
   private readonly createAlbumButton: Locator;
-  
+
   // Album navigation
   private readonly albumsButton: Locator;
-  
+
   // Toast notifications
   private readonly toastTitle: Locator;
   private readonly toastMessage: Locator;
 
+  // More actions
+  private readonly moreActionsButton: Locator;
+  private readonly deleteOption: Locator;
+  private readonly confirmButton: Locator;
+
+
+
+
   constructor(page: Page) {
     super(page);
-    
+
     // Initialize album creation locators
     this.newAlbumIcon = this.getLocator('.AlbumCard_newAlbumIcon__tJwvU').first();
     this.albumTagInput = this.getByRole('textbox', { name: 'Type Tag' });
     this.createAlbumButton = this.getByRole('button', { name: 'Create Album' });
-    
+
     // Initialize navigation locators
     this.albumsButton = this.getByRole('button', { name: 'Albums' });
-    
+
     // Initialize toast locators
     this.toastTitle = this.getByTestId('toast-title');
     this.toastMessage = this.getByTestId('toast-message');
-  }
 
+
+    // More actions: data-testid="more-actions"; Delete: getByText per codegen
+    this.moreActionsButton = this.getByTestId('more-actions');
+    this.deleteOption = this.getByText('Delete');
+    this.confirmButton = this.getByTestId('button-confirm');
+  }
   /**
    * Navigate to Albums section
    */
@@ -46,7 +59,24 @@ export class AlbumPage extends BasePage {
    * Click on "Create New Album" icon
    */
   async clickNewAlbum(): Promise<void> {
-    await this.click(this.newAlbumIcon);
+    try {
+      await this.waitForVisible(this.newAlbumIcon, 10000);
+      await this.scrollToElement(this.newAlbumIcon);
+      await this.click(this.newAlbumIcon);
+      return;
+    } catch {
+      // Re-open Albums via sidebar if list didn't render
+      await this.page.getByTestId('Media').click({ force: true });
+      await this.page
+        .getByRole('menuitem', { name: 'Albums' })
+        .getByRole('button', { name: 'Albums' })
+        .click({ force: true });
+    }
+
+    // Fallback: click the first new-album icon even if not marked visible
+    const fallbackIcon = this.page.locator('.AlbumCard_newAlbumIcon__tJwvU').first();
+    await fallbackIcon.waitFor({ state: 'attached', timeout: 10000 });
+    await fallbackIcon.click({ force: true });
   }
 
   /**
@@ -122,7 +152,48 @@ export class AlbumPage extends BasePage {
    * @returns Locator for the album
    */
   getAlbumByName(albumName: string): Locator {
-    return this.getLocator('div').filter({ hasText: new RegExp(`^${albumName}$`) }).nth(1);
+    // Previous approach (generic text search):
+    // return this.page.getByText(albumName, { exact: false }).first();
+    // New approach: target album title text by data-testid and filter by name
+    return this.page
+      .getByTestId('undefined-truncated-text')
+      .filter({ hasText: albumName })
+      .first();
+  }
+
+  /**
+   * Click on album by name using alternative approach (data-testid or class)
+   * @param albumName - name/tag of the album
+   * @returns Locator for the album
+   */
+  getAlbumByNameAlternative(albumName: string): Locator {
+    // Try to find album card that contains the text
+    return this.page.locator('.AlbumCard_albumImageWrapper__XFkz4, [data-testid*="album"]')
+      .filter({ hasText: albumName })
+      .first();
+  }
+
+  /**
+   * Debug method: Get all album names visible on page
+   * @returns Array of album names
+   */
+  async getAllAlbumNames(): Promise<string[]> {
+    // Wait for albums to load
+    await this.page.waitForTimeout(2000);
+
+    // Get all text content from album cards
+    const albums = await this.page.locator('.AlbumCard_albumImageWrapper__XFkz4, [class*="album"]').all();
+    const names: string[] = [];
+
+    for (const album of albums) {
+      const text = await album.textContent();
+      if (text && text.trim()) {
+        names.push(text.trim());
+      }
+    }
+
+    console.log('📋 Found albums:', names);
+    return names;
   }
 
   /**
@@ -130,8 +201,20 @@ export class AlbumPage extends BasePage {
    * @param albumName - name/tag of the album
    */
   async clickAlbumByName(albumName: string): Promise<void> {
-    const album = this.getAlbumByName(albumName);
-    await this.click(album);
+    // const album = this.getAlbumByName(albumName);
+    // await this.click(album);
+    // Wait a bit for albums to render
+    await this.page.waitForTimeout(1000);
+
+    try {
+      // Try primary method
+      const album = this.getAlbumByName(albumName);
+      await this.click(album);
+    } catch {
+      // Try alternative method if primary fails
+      const album = this.getAlbumByNameAlternative(albumName);
+      await this.click(album);
+    }
   }
 
   /**
@@ -140,8 +223,19 @@ export class AlbumPage extends BasePage {
    * @returns true if album is visible
    */
   async isAlbumVisible(albumName: string): Promise<boolean> {
-    const album = this.getAlbumByName(albumName);
-    return await this.isVisible(album, 5000);
+    try {
+      const album = this.getAlbumByName(albumName);
+      await album.waitFor({ state: 'visible', timeout: 10000 });
+      return true;
+    } catch {
+      try {
+        const album = this.getAlbumByNameAlternative(albumName);
+        await album.waitFor({ state: 'visible', timeout: 10000 });
+        return true;
+      } catch {
+        return false;
+      }
+    }
   }
 
   /**
@@ -189,5 +283,23 @@ export class AlbumPage extends BasePage {
    */
   async isCreateAlbumButtonEnabled(): Promise<boolean> {
     return await this.isEnabled(this.createAlbumButton);
+  }
+
+
+  //Delete item (album or file)
+  /**
+   * Open more actions menu
+   */
+  async openMoreActions(): Promise<void> {
+    await this.click(this.moreActionsButton);
+  }
+
+  // Delete item (album or file)
+  async deleteItem(): Promise<void> {
+    await this.openMoreActions();
+    await this.deleteOption.waitFor({ state: 'visible', timeout: 5000 });
+    await this.click(this.deleteOption);
+    await this.confirmButton.waitFor({ state: 'visible', timeout: 5000 });
+    await this.confirmButton.click({ force: true });
   }
 }

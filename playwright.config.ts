@@ -12,6 +12,10 @@ dotenv.config({ path: path.resolve(__dirname, '.env') });
 export default defineConfig({
   testDir: './tests',
 
+  /*Global setup for autenthication */
+
+  //globalSetup: require.resolve('./global-setup.ts'),
+
   /* Run tests in files in parallel */
   fullyParallel: true,
 
@@ -34,7 +38,7 @@ export default defineConfig({
   /* Maximum time per test */
   timeout: parseInt(process.env.TIMEOUT || '30000', 10),
 
-/* Timeout for expect assertions */
+  /* Timeout for expect assertions */
   expect: {
     timeout: 5 * 1000,
   },
@@ -69,7 +73,10 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome']
+        //storageState: 'auth.json',
+      },
     },
 
     // Uncomment to run tests in Firefox

@@ -13,6 +13,9 @@ export class MediaPage extends BasePage {
     // Tab navigation
     private readonly albumsButton: Locator;
     private readonly galleryButton: Locator;
+    private readonly albumsMenuItem: Locator;
+    private readonly galleryMenuItem: Locator;
+    private readonly mediaMenuButton: Locator;
 
     // Upload functionality
     private readonly uploadButton: Locator;
@@ -48,9 +51,17 @@ export class MediaPage extends BasePage {
         this.sidebarToggle = this.getByTestId('sidebar-toggle');
         this.mediaMenuItem = this.getByTestId('Media');
 
-        // Initialize tab navigation locators
-        this.albumsButton = this.getByRole('button', { name: 'Albums' });
-        this.galleryButton = this.getByRole('button', { name: 'Gallery' });
+        // Tab buttons in main content (use .last() — first match is in sidebar menu)
+        this.albumsButton = this.getByRole('button', { name: 'Albums' }).last();
+        this.galleryButton = this.getByRole('button', { name: 'Gallery' }).last();
+        // Sidebar menu items under Media
+        this.albumsMenuItem = this.page
+            .getByRole('menuitem', { name: 'Albums' })
+            .getByRole('button', { name: 'Albums' });
+        this.galleryMenuItem = this.page
+            .getByRole('menuitem', { name: 'Gallery' })
+            .getByRole('button', { name: 'Gallery' });
+        this.mediaMenuButton = this.getByTestId('Media');
 
         // Initialize upload locators
         this.uploadButton = this.getByTestId('upload');
@@ -74,7 +85,7 @@ export class MediaPage extends BasePage {
         this.photoCheckbox = this.getByRole('checkbox', { name: 'Photo' });
         this.videoCheckbox = this.getByRole('checkbox', { name: 'Video' });
 
-        // Initialize more actions locators
+        // More actions: data-testid="more-actions"; Delete: getByText per codegen
         this.moreActionsButton = this.getByTestId('more-actions');
         this.deleteOption = this.getByText('Delete');
         this.confirmButton = this.getByTestId('button-confirm');
@@ -93,7 +104,14 @@ export class MediaPage extends BasePage {
      * Switch to Albums tab
      */
     async switchToAlbumsTab(): Promise<void> {
-        await this.click(this.albumsButton);
+        try {
+            // Prefer sidebar navigation under Media (more stable)
+            await this.mediaMenuButton.click({ force: true });
+            await this.albumsMenuItem.click({ force: true });
+        } catch {
+            // Fallback to content tab
+            await this.click(this.albumsButton);
+        }
         await this.waitForPageLoad();
     }
 
@@ -101,7 +119,14 @@ export class MediaPage extends BasePage {
      * Switch to Gallery tab
      */
     async switchToGalleryTab(): Promise<void> {
-        await this.click(this.galleryButton);
+        try {
+            // Prefer sidebar navigation under Media (more stable)
+            await this.mediaMenuButton.click({ force: true });
+            await this.galleryMenuItem.click({ force: true });
+        } catch {
+            // Fallback to content tab
+            await this.click(this.galleryButton);
+        }
         await this.waitForPageLoad();
     }
 
@@ -336,8 +361,10 @@ export class MediaPage extends BasePage {
      */
     async deleteItem(): Promise<void> {
         await this.openMoreActions();
+        await this.deleteOption.waitFor({ state: 'visible', timeout: 5000 });
         await this.click(this.deleteOption);
-        await this.click(this.confirmButton);
+        await this.confirmButton.waitFor({ state: 'visible', timeout: 5000 });
+        await this.confirmButton.click({ force: true });
     }
 
     /**

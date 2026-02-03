@@ -1,0 +1,36 @@
+import { chromium, FullConfig } from '@playwright/test';
+import { config } from './config/env.config';
+
+/**
+ * Global setup - runs once before all tests
+ * Saves authentication state to reuse in tests
+ */
+async function globalSetup(config: FullConfig) {
+  const browser = await chromium.launch();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+
+  console.log('🔐 Performing global login...');
+
+  // Login
+  const { username, password } = require('./config/env.config').config.credentials;
+  const baseURL = process.env.BASE_URL || 'https://kal-sense.prod.kaleidoo-dev.com';
+
+  await page.goto(`${baseURL}/Kaleidoo_AI`);
+  await page.getByTestId('userEmail').fill(username);
+  await page.getByTestId('password').fill(password);
+  await page.getByTestId('login-btn').click();
+  
+  // Wait for login to complete
+  await page.waitForLoadState('networkidle');
+  await page.waitForTimeout(2000);
+
+  // Save authentication state
+  await context.storageState({ path: 'auth.json' });
+
+  console.log('✅ Authentication state saved!');
+
+  await browser.close();
+}
+
+export default globalSetup;
