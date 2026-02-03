@@ -75,7 +75,7 @@ test.describe.serial('Assist Page - UI Verification (split)', () => {
     await assistPage.openConnectorDropdown();
     await page.waitForTimeout(2000);
 
-    const optionToCheck = ['General photos - ENMIL', 'MIL photos', 'Tables', 'Podcasts', 'Academic audio', 'Banking Audio', 'Medical docs','General docs'];
+    const optionToCheck = ['General photos - ENMIL', 'MIL photos', 'Tables', 'Podcasts', 'Academic audio', 'Banking Audio', 'Medical docs', 'General docs'];
 
     for (const option of optionToCheck) {
       const optionExists = await assistPage.isConnectorOptionAvailable(option);
