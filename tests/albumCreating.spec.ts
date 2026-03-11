@@ -49,6 +49,8 @@ test.describe('Album Management -E2E', () => {
         await newAlbumIcon.click({ force: true })
         console.log('  - Clicked New Album icon');
 
+        
+        
         await page.waitForTimeout(1000);
 
         // ========================================
@@ -62,11 +64,19 @@ test.describe('Album Management -E2E', () => {
         console.log(`  - Entered album name: "${albumName}"`);
 
         // ========================================
-        //Create album -click
+        //Create album - click
         // ========================================
         const createButton = page.getByRole('button', { name: 'Create Album' });
         await createButton.click();
         console.log('  - Clicked Create Album button');
+
+        //Checking via toast message
+        await albumPage.waitForToast();
+        const toastTitle = await albumPage.getToastTitle();
+        expect(toastTitle).toContain('created');
+        
+
+        
         console.log('✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅✅')
         console.log('✅ Album created successfully');
 

@@ -5,7 +5,7 @@ import { ImageDetailsPage } from '../pages/ImageDetailsPage';
 import { config } from '../config/env.config';
 import { FileHelpers } from '../utils/fileHelpers';
 import testData from '../fixtures/testData.json';
-
+import { APIHelpers } from '../utils/apiHelper';
 /**
  * Update Image Tags Test 
  * Complete flow: Login → Upload Image → Update Tags on Uploaded Image
@@ -73,6 +73,7 @@ test.describe.skip('Update Image Tags - E2E', () => {
         console.log('  - Added description');
         await page.waitForTimeout(500);
 
+        //Change the method to confirm upload
         await mediaPage.confirmUpload();
         console.log('  - Clicked Upload button (confirm)');
 
@@ -90,17 +91,20 @@ test.describe.skip('Update Image Tags - E2E', () => {
         console.log('STEP 3: Verify Files via API');
 
         // Make API request to check files
-        const apiResponse = await page.request.post('https://kal-sense.prod.kaleidoo-dev.com/api/files/get_all_v2', {
-            data: {
-                "org_id": "6733306465383e58c9b88306",
-                "project_ids": ["68af16da443fd05cb0c83c2a", "6882198cb753d1caf456e694"],
-                "limit": 32,
-                "product": "KalMedia"
-            }
-        });
+        // const apiResponse = await page.request.post('https://kal-sense.prod.kaleidoo-dev.com/api/files/get_all_v2', {
+        //     data: {
+        //         "org_id": "6733306465383e58c9b88306",
+        //         "project_ids": ["68af16da443fd05cb0c83c2a", "6882198cb753d1caf456e694"],
+        //         "limit": 32,
+        //         "product": "KalMedia"
+        //     }
+        // });
 
-        const filesData = await apiResponse.json();
-        const filesCount = filesData.data?.length || 0;
+        const files = await APIHelpers.getAllFiles(page);
+        const filesCount = files.length || 0;
+
+        //const filesData = await apiResponse.json();
+        //const filesCount = filesData.data?.length || 0;
         console.log(`  - Files in system via API: ${filesCount}`);
 
         if (filesCount === 0) {
