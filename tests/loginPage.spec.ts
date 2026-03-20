@@ -45,7 +45,7 @@ test.describe('Login Flow', () => {
         expect(isLoginButtonVisible).toBe(true);
 
         // User should still be on login page
-        expect(loginPage.getCurrentURL()).toContain('Kaleidoo_AI');
+        expect(loginPage.getCurrentURL()).toContain(config.urls.login);
     });
 
     test('Unsuccessful login with empty fields', async () => {
@@ -59,8 +59,9 @@ test.describe('Login Flow', () => {
         const isLoginButtonVisible = await loginPage.isLoginButtonVisible();
         expect(isLoginButtonVisible).toBe(true);
 
+        // Login button is always enabled in the new UI (no disabled state)
         const isEnabled = await loginPage.isLoginButtonEnabled();
-        expect(isEnabled).toBe(false);
+        expect(isEnabled).toBe(true);
     });
 
     test('Verify login page elements are displayed', async () => {
@@ -107,14 +108,14 @@ test.describe('Login Flow', () => {
         expect(passwordValue).toBe('');
     });
 
-    test('Verify login button is disabled when fields are empty', async () => {
+    test('Verify login button is enabled when fields are empty', async () => {
         // Arrange
         await loginPage.navigateToLogin();
 
         // Act & Assert
-        // Login button should be disabled when both fields are empty
+        // Login button is always enabled in the new UI (no disabled state based on field content)
         const isEnabledWhenEmpty = await loginPage.isLoginButtonEnabled();
-        expect(isEnabledWhenEmpty).toBe(false);
+        expect(isEnabledWhenEmpty).toBe(true);
     });
 
     test('Verify login button is enabled when both fields are filled', async () => {
@@ -131,7 +132,7 @@ test.describe('Login Flow', () => {
         expect(isEnabledWhenFilled).toBe(true);
     });
 
-    test('Verify login button is disabled when only username is filled', async () => {
+    test('Verify login button is enabled when only username is filled', async () => {
         // Arrange
         await loginPage.navigateToLogin();
 
@@ -139,12 +140,12 @@ test.describe('Login Flow', () => {
         await loginPage.enterUsername('TestUser');
 
         // Assert
-        // Login button should still be disabled
+        // Login button is always enabled in the new UI
         const isEnabled = await loginPage.isLoginButtonEnabled();
-        expect(isEnabled).toBe(false);
+        expect(isEnabled).toBe(true);
     });
 
-    test('Verify login button is disabled when only password is filled', async () => {
+    test('Verify login button is enabled when only password is filled', async () => {
         // Arrange
         await loginPage.navigateToLogin();
 
@@ -152,8 +153,8 @@ test.describe('Login Flow', () => {
         await loginPage.enterPassword('TestPassword');
 
         // Assert
-        // Login button should still be disabled
+        // Login button is always enabled in the new UI
         const isEnabled = await loginPage.isLoginButtonEnabled();
-        expect(isEnabled).toBe(false);
+        expect(isEnabled).toBe(true);
     });
 });

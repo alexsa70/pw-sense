@@ -45,7 +45,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    baseURL: process.env.BASE_URL || 'https://kal-sense.prod.kaleidoo-dev.com',
+    baseURL: process.env.BASE_URL || 'https://kal-sense-bynet.kaleidoo-dev.com',
 
     /* Screenshot only when failing */
     screenshot: 'only-on-failure',
