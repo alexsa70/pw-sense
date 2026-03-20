@@ -4,6 +4,7 @@ import { MediaPage } from '../pages/MediaPage';
 import { config } from '../config/env.config';
 import { FileHelpers } from '../utils/fileHelpers';
 import testData from '../fixtures/testData.json';
+import { APIHelpers } from '../utils/apiHelper';
 
 /**
  * Upload Image Test 
@@ -35,30 +36,45 @@ test.describe('Upload Image - E2E', () => {
         console.log('STEP 2: Navigate to Gallery');
         await mediaPage.navigateToMedia();
         await mediaPage.switchToGalleryTab();
-        await page.waitForTimeout(2000);
+        //Change to SMART wait
+        //await page.waitForTimeout(2000);
+        await page.waitForLoadState('networkidle');
         console.log('✅ Navigated to Gallery page');
 
         // ========================================
         // STEP 3: Upload Image
         // ========================================
         console.log('STEP 3: Upload Image');
+
+        await mediaPage.confirmUpload()
         await page.waitForLoadState('networkidle');
 
         // Click upload button
         await mediaPage.clickUpload();
         console.log('  - Clicked Upload button');
-        await page.waitForTimeout(2000);
+        //Change to SMART wait
+        await page.waitForLoadState('networkidle');
+        //await page.waitForTimeout(2000);
 
         // Select agent
         await mediaPage.selectAgent('General photos - EN');
         console.log('  - Selected agent');
-        await page.waitForTimeout(1000);
+         //Change to SMART wait
+         await page.waitForLoadState('networkidle');
+        //await page.waitForTimeout(1000);
 
         // Upload file
         const fileInput = page.locator('input[type="file"]');
         await fileInput.setInputFiles(imagePath);
         console.log(`  - File selected: ${imagePath}`);
-        await page.waitForTimeout(3000);
+        //Change to SMART wait
+        await page.waitForLoadState('networkidle');
+        //await page.waitForTimeout(3000);
+
+        //Verification via API
+       
+       const uploadedFile = await APIHelpers.fileExists(page, 'test-image.png');
+       expect(uploadedFile).toBe(true);
 
         // Add tags
         for (const tag of tags) {
@@ -70,11 +86,19 @@ test.describe('Upload Image - E2E', () => {
         // Add description
         await mediaPage.enterUploadDescription(description);
         console.log('  - Added description');
-        await page.waitForTimeout(500);
+         //Change to SMART wait
+        await page.waitForLoadState('networkidle');
+        //await page.waitForTimeout(500);
 
         // Confirm upload
         await mediaPage.confirmUpload();
         console.log('  - Clicked Upload button (confirm)');
+
+        //Checking via toast message
+        await mediaPage.waitForToast();
+        const toastTitle = await mediaPage.getToastTitle();
+        expect(toastTitle).toContain('Success');
+        console.log(` ✅ Upload confirmed: ${toastTitle}`);
 
         // Wait for upload
         await page.waitForTimeout(5000);

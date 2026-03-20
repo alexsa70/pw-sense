@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { config } from '../config/env.config';
 
 /**
  * LoginPage - Page Object for the KalSense login page
@@ -24,21 +25,21 @@ export class LoginPage extends BasePage {
     super(page);
     
     // Initialize locators
-    this.usernameInput = this.getByTestId('userEmail');
-    this.passwordInput = this.getByTestId('password');
-    this.loginButton = this.getByTestId('login-btn');
-    this.forgotPasswordLink = this.getByTestId('forgot-pass');
-    this.backToLoginButton = this.getByTestId('go-back-to-login');
-    this.welcomeTitle = this.getByText('Welcome To Kal Sense');
-    this.subtitle = this.getByText('The perfect connection');
-    this.logo = this.page.getByRole('img').first();
+    this.usernameInput = this.getByTestId('new-login-page-login-card-form-email-input');
+    this.passwordInput = this.getByTestId('new-login-page-login-card-form-password-input');
+    this.loginButton = this.getByTestId('new-login-page-login-card-form-submit');
+    this.forgotPasswordLink = this.getByTestId('new-login-page-login-card-form-password-forgot-password').getByRole('button');
+    this.backToLoginButton = this.getByTestId('new-login-page-reset-password-back').getByRole('button');
+    this.welcomeTitle = this.getByText('Welcome to Sense');
+    this.subtitle = this.getByText('The perfect connection', false);
+    this.logo = this.getByTestId('new-login-page-logo');
   }
 
   /**
    * Navigate to login page
    */
   async navigateToLogin(): Promise<void> {
-    await this.navigate('/Kaleidoo_AI');
+    await this.navigate(config.urls.login);
     await this.waitForPageLoad();
   }
 
